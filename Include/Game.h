@@ -22,7 +22,7 @@ public:
     void run();
 
     //Screen
-    void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
+    void detectFace(Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
 
     //Draw
     void drawTransRect(Mat frame, Scalar color, double alpha, Rect region);

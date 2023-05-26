@@ -67,7 +67,7 @@ void Game::run() {
 }
 
 //Detect face and draw frame 
-void Game::detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
+void Game::detectFace( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
 {
     double t = 0;
     vector<Rect> faces;
@@ -94,14 +94,21 @@ void Game::detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bo
         Size(40, 40) );
     t = (double)getTickCount() - t;
     printf( "detection time = %g ms\n", t*1000/getTickFrequency());
-    // PERCORRE AS FACES ENCONTRADAS
-    for ( size_t i = 0; i < faces.size(); i++ )
-    {
-        Rect r = faces[i];
-        rectangle( img, Point(cvRound(r.x), cvRound(r.y)),
+
+    int largestArea = 0;
+    int largestFaceIndex;
+    // Percorre as faces encontradas, e retorna o índice da maior face
+    for ( size_t i = 0; i < faces.size(); i++ ) {
+      int currentArea = faces[i].width*faces[i].height;
+      if(currentArea > largestArea) {
+        largestArea = currentArea;
+        largestFaceIndex = i;
+      }
+    }
+
+    rectangle( img, Point(cvRound(r.x), cvRound(r.y)),
                     Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
                     color, 3);
-    }
 
     // Desenha uma imagem
     Mat overlay = cv::imread("../Images/orange.png", IMREAD_UNCHANGED);
