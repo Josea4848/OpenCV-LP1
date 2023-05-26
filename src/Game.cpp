@@ -1,61 +1,4 @@
-#include "opencv2/objdetect.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/videoio.hpp"
-#include <iostream>
-
-using namespace std;
-using namespace cv;
-
-void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
-
-string cascadeName;
-
-int main( int argc, const char** argv )
-{
-    VideoCapture capture;
-    Mat frame;
-    bool tryflip;
-    CascadeClassifier cascade;
-    double scale;
-
-    cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 1; // usar 1, 2, 4.
-    if (scale < 1)
-        scale = 1;
-    tryflip = true;
-
-    if (!cascade.load(cascadeName)) {
-        cerr << "ERROR: Could not load classifier cascade" << endl;
-        return -1;
-    }
-
-    // if(!capture.open("video.mp4")) // para testar com um video
-    if(!capture.open(0))
-    {
-        cout << "Capture from camera #0 didn't work" << endl;
-        return 1;
-    }
-
-    if( capture.isOpened() ) {
-        cout << "Video capturing has been started ..." << endl;
-
-        for(;;)
-        {
-            capture >> frame;
-            if( frame.empty() )
-                break;
-
-            detectAndDraw( frame, cascade, scale, tryflip );
-
-            char c = (char)waitKey(10);
-            if( c == 27 || c == 'q' || c == 'Q' )
-                break;
-        }
-    }
-
-    return 0;
-}
+#include "../Include/Game.h"
 
 /**
  * @brief Draws a transparent image over a frame Mat.
@@ -65,16 +8,7 @@ int main( int argc, const char** argv )
  * @param xPos x position of the frame image where the image will start.
  * @param yPos y position of the frame image where the image will start.
  */
-void drawTransparency(Mat frame, Mat transp, int xPos, int yPos) {
-    Mat mask;
-    vector<Mat> layers;
 
-    split(transp, layers); // seperate channels
-    Mat rgb[3] = { layers[0],layers[1],layers[2] };
-    mask = layers[3]; // png's alpha channel used as mask
-    merge(rgb, 3, transp);  // put together the RGB channels, now transp insn't transparent 
-    transp.copyTo(frame.rowRange(yPos, yPos + transp.rows).colRange(xPos, xPos + transp.cols), mask);
-}
 
 /**
  * @brief Draws a transparent rect over a frame Mat.
@@ -84,13 +18,56 @@ void drawTransparency(Mat frame, Mat transp, int xPos, int yPos) {
  * @param alpha transparence level. 0 is 100% transparent, 1 is opaque.
  * @param regin rect region where the should be positioned
  */
-void drawTransRect(Mat frame, Scalar color, double alpha, Rect region) {
-    Mat roi = frame(region);
-    Mat rectImg(roi.size(), CV_8UC3, color); 
-    addWeighted(rectImg, alpha, roi, 1.0 - alpha , 0, roi); 
+
+Game::Game() {
+
 }
 
-void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
+//Run
+void Game::run() {
+  VideoCapture capture;
+  Mat frame;
+  bool tryflip;
+  CascadeClassifier cascade;
+  double scale;
+
+  scale = 1; // usar 1, 2, 4.
+  if (scale < 1)
+      scale = 1;
+  tryflip = true;
+
+  //Tentando abrir o cascade
+  if (!cascade.load(cascadeName)) {
+      cerr << "ERROR: Could not load classifier cascade" << endl;
+  }
+
+  //Tentando abrir webcam
+  if(!capture.open(0))
+  {
+      cout << "Capture from camera #0 didn't work" << endl;
+  }
+
+  if( capture.isOpened() ) {
+      cout << "Video capturing has been started ..." << endl;
+
+      while (true)
+      {
+          capture >> frame;
+          if( frame.empty() )
+              break;
+
+          detectAndDraw( frame, cascade, scale, tryflip );
+
+          char c = (char)waitKey(10);
+          //Encerra aplicação
+          if( c == 27 || c == 'q' || c == 'Q' )
+              break;
+      }
+  }
+}
+
+//Detect face and draw frame 
+void Game::detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
 {
     double t = 0;
     vector<Rect> faces;
@@ -127,7 +104,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     }
 
     // Desenha uma imagem
-    Mat overlay = cv::imread("Images/orange.png", IMREAD_UNCHANGED);
+    Mat overlay = cv::imread("../Images/orange.png", IMREAD_UNCHANGED);
     drawTransparency(img, overlay, 10, 250);
 
     // Desenha quadrados com transparencia
@@ -141,4 +118,26 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
 
     // Desenha o frame na tela
     imshow( "result", img );
+}
+
+//Draw
+void Game::drawTransRect(Mat frame, Scalar color, double alpha, Rect region) {
+    Mat roi = frame(region);
+    Mat rectImg(roi.size(), CV_8UC3, color); 
+    addWeighted(rectImg, alpha, roi, 1.0 - alpha , 0, roi); 
+}
+void Game::drawTransparency(Mat frame, Mat transp, int xPos, int yPos) {
+    Mat mask;
+    vector<Mat> layers;
+
+    split(transp, layers); // seperate channels
+    Mat rgb[3] = { layers[0],layers[1],layers[2] };
+    mask = layers[3]; // png's alpha channel used as mask
+    merge(rgb, 3, transp);  // put together the RGB channels, now transp insn't transparent 
+    transp.copyTo(frame.rowRange(yPos, yPos + transp.rows).colRange(xPos, xPos + transp.cols), mask);
+}
+
+Game::~Game()
+{
+
 }
