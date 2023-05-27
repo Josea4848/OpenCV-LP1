@@ -31,6 +31,9 @@ void Game::run() {
       scale = 1;
   tryflip = true;
 
+  //Variável de controle em caso de perder o jogo
+  gameOver = false;
+
   //Tentando abrir o cascade
   if (!cascade.load(cascadeName)) {
       cerr << "ERROR: Could not load classifier cascade" << endl;
@@ -62,7 +65,7 @@ void Game::run() {
 
           char c = (char)waitKey(10);
           //Encerra aplicação
-          if( c == 27 || c == 'q' || c == 'Q' )
+          if( c == 27 || c == 'q' || c == 'Q' || isGameOver())
               break;
       }
   }
@@ -254,12 +257,13 @@ void Game::checkColision() {
         putText	(frame, "Placar: " + to_string(placar), Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(244,255,0),3); // fonte
         break;
       case 1:
-        if(placar > 0)
+        if(placar > 0) {
           placar--;
-        putText	(frame, "Placar: " + to_string(placar), Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(0,0,255), 3); // fonte
+          putText	(frame, "Placar: " + to_string(placar), Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(0,0,255), 3); // fonte
+        }
         break;
       case 2:
-        //placar = 0;
+        setGameOver(true);
         break;
       default:
         break;
@@ -288,5 +292,11 @@ void Game::setFaceY(int y, int faceHeight) {
 //Record
 int Game::getRecord() {return record;}
 void Game::setRecord(int record) {this->record = record;}
+
+//GameOver
+bool Game::isGameOver() {return gameOver;}
+void Game::setGameOver(bool state) {
+  gameOver = state;
+}
 
 Game::~Game() {}

@@ -65,12 +65,16 @@ public:
     int getRecord();
     void setRecord(int record);
 
+    //GameOver
+    bool isGameOver();
+    void setGameOver(bool state);
+
     vector<Object*> objects;
 private:
     int record, placar = 0;
     VideoCapture capture;
     Mat frame;
-    bool tryflip;
+    bool tryflip, gameOver;
     CascadeClassifier cascade;
     double scale;
     int faceX, faceY;
