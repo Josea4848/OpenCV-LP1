@@ -130,14 +130,14 @@ void Game::drawObjects(Mat img) {
   }
   static int vy = 0;
   for(Object* obj: objects) {
-    if(obj->getPosY() + 20 < getScreenHeight()-20) {
-      Mat overlay = imread(obj->getShape(), IMREAD_UNCHANGED);
-      resize(overlay, overlay, Size(obj->getHeight(), obj->getWidth()));
-      drawTransparency(img, overlay, obj->getPosX(), obj->getPosY() + (vy));
+    obj->setPosY(obj->getPosY() + obj->getVelY());
+    Mat overlay = imread(obj->getShape(), IMREAD_UNCHANGED);
+    resize(overlay, overlay, Size(obj->getHeight(), obj->getWidth()));
+    if(overlay.cols + obj->getPosY() < getScreenHeight()- getScreenHeight()/8) {
+      drawTransparency(img, overlay, obj->getPosX(), obj->getPosY());
+      obj->speedUp();
     }  
   }
-
-  vy += 2;
 }
 void Game::drawFrame(Mat img) {
   // Desenha o frame na tela
@@ -202,7 +202,7 @@ int Game::xRand() {
 //isClose
 bool Game::isClose(int x, int y, int x0, int y0) {
   int distancia = sqrt(pow(x - x0, 2) + pow(y - y0, 2));
-  if (distancia < 150){
+  if (distancia < 400){
     return true;
   } 
   return false;

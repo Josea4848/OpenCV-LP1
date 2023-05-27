@@ -13,6 +13,8 @@ int main( int argc, const char** argv )
 
     g1.run();
 
+    cout << g1.objects.size();
+
     return 0;
 }
 
