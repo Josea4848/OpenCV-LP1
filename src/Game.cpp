@@ -25,12 +25,6 @@ Game::Game() {
 
 //Run
 void Game::run() {
-  VideoCapture capture;
-  Mat frame;
-  bool tryflip;
-  CascadeClassifier cascade;
-  double scale;
-
   scale = 1; // usar 1, 2, 4.
   if (scale < 1)
       scale = 1;
@@ -55,8 +49,9 @@ void Game::run() {
           capture >> frame;
           if( frame.empty() )
               break;
-
-          detectAndDraw( frame, cascade, scale, tryflip );
+          detectFace( frame, cascade, scale, tryflip );
+          drawMenu(frame);
+          drawFrame(frame);
 
           char c = (char)waitKey(10);
           //Encerra aplicação
@@ -96,35 +91,45 @@ void Game::detectFace( Mat& img, CascadeClassifier& cascade, double scale, bool 
     printf( "detection time = %g ms\n", t*1000/getTickFrequency());
 
     int largestArea = 0;
-    int largestFaceIndex;
+    Rect r;
     // Percorre as faces encontradas, e retorna o índice da maior face
     for ( size_t i = 0; i < faces.size(); i++ ) {
       int currentArea = faces[i].width*faces[i].height;
       if(currentArea > largestArea) {
         largestArea = currentArea;
-        largestFaceIndex = i;
+        r = faces[i];
       }
     }
 
     rectangle( img, Point(cvRound(r.x), cvRound(r.y)),
                     Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
-                    color, 3);
+                    color, 3); 
 
     // Desenha uma imagem
-    Mat overlay = cv::imread("../Images/orange.png", IMREAD_UNCHANGED);
-    drawTransparency(img, overlay, 10, 250);
-
-    // Desenha quadrados com transparencia
-    double alpha = 0.3;
-    drawTransRect(img, Scalar(0,255,0), alpha, Rect(  0, 0, 200, 200));
-    drawTransRect(img, Scalar(255,0,0), alpha, Rect(200, 0, 200, 200));
+    Mat overlay = cv::imread("../Images/apple.png", IMREAD_UNCHANGED);
+    //drawTransparency(img, overlay, 10, 250);
 
     // Desenha um texto
     color = Scalar(0,0,255);
     putText	(img, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
-
-    // Desenha o frame na tela
-    imshow( "result", img );
+}
+void Game::drawMenu(Mat img) {
+  // Desenha quadrados com transparencia
+  double alpha = 0.3;
+  drawTransRect(img, Scalar(0,255,0), alpha, Rect(  0, 0, 200, 200));
+  drawTransRect(img, Scalar(255,0,0), alpha, Rect(200, 0, 200, 200));
+}
+void Game::drawFrame(Mat img) {
+  // Desenha o frame na tela
+  imshow( "Fruit tinta", img );
+}
+//Height
+int Game::getScreenHeight() {
+  return capture.get(cv::CAP_PROP_FRAME_HEIGHT);
+}
+//Width
+int Game::getScreenWidth() {
+  return capture.get(cv::CAP_PROP_FRAME_WIDTH);
 }
 
 //Draw
