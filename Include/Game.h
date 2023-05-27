@@ -42,19 +42,32 @@ public:
     void drawTransparency(Mat frame, Mat transp, int xPos, int yPos);
     void drawFrame(Mat frame);
     ~Game();
-    
+
+    //Face position
+    int getFaceX();
+    int getFaceY();
+    void setFaceX(int x, int faceWidth);
+    void setFaceY(int y, int faceHeight);
+
     //IsClose
     bool isClose(int x, int y, int x0, int y0);
     bool isCloseOfObjects(int x, int y, vector<Object*> objects);
 
+    //check colision
+    void checkColision();
+
+    //Distance points
+    int distancePoints(int x, int y, int x0, int y0);
+
     vector<Object*> objects;
 private:
-    int record;
+    int record, placar;
     VideoCapture capture;
     Mat frame;
     bool tryflip;
     CascadeClassifier cascade;
     double scale;
+    int faceX, faceY;
 };
 
 #endif

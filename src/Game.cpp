@@ -36,7 +36,7 @@ void Game::run() {
   }
 
   //Tentando abrir webcam
-  if(!capture.open(0))
+  if(!capture.open(2))
   {
       cout << "Capture from camera #0 didn't work" << endl;
   }
@@ -52,6 +52,7 @@ void Game::run() {
           detectFace( frame, cascade, scale, tryflip );
           drawObjects(frame);
           drawMenu(frame);
+          checkColision();
           drawFrame(frame);
 
           char c = (char)waitKey(10);
@@ -83,7 +84,7 @@ void Game::detectFace( Mat& img, CascadeClassifier& cascade, double scale, bool 
   t = (double)getTickCount();
 
   cascade.detectMultiScale( smallImg, faces,
-      1.05, 2, 0
+      1.8, 2, 0
       //|CASCADE_FIND_BIGGEST_OBJECT
       //|CASCADE_DO_ROUGH_SEARCH
       |CASCADE_SCALE_IMAGE,
@@ -101,13 +102,19 @@ void Game::detectFace( Mat& img, CascadeClassifier& cascade, double scale, bool 
       r = faces[i];
     }
   }
+
+  //Definindo coordenada X atual
+  setFaceX(r.x, r.width);
+  //Definindo coordenada Y atual
+  setFaceY(r.y, r.height);
+
   rectangle( img, Point(cvRound(r.x), cvRound(r.y)),
                   Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
-                  color, 3); 
+                  color, 3);  
 }
 void Game::drawMenu(Mat img) {
   // Desenha um texto
-  putText	(img, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(244,0,0)); // fonte
+  putText	(img, "Placar: " + to_string(placar), Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(244,0,0)); // fonte
   
   // Desenha quadrados com transparencia
   double alpha = 1;
@@ -137,7 +144,7 @@ void Game::drawObjects(Mat img) {
     Mat overlay = imread(objects[i]->getShape(), IMREAD_UNCHANGED);
     resize(overlay, overlay, Size(objects[i]->getHeight(), objects[i]->getWidth()));
     //Se o objeto ainda não passar do limite, será exibido
-    if(overlay.cols + objects[i]->getPosY() + objects[i]->getVelY() < getScreenHeight()- getScreenHeight()/8) {
+    if(overlay.cols + objects[i]->getPosY() /* + objects[i]->getVelY() */ < getScreenHeight()- getScreenHeight()/8) {
       drawTransparency(img, overlay, objects[i]->getPosX(), objects[i]->getPosY());
       objects[i]->speedUp();
     }
@@ -228,6 +235,32 @@ bool Game::isCloseOfObjects(int x, int y, vector<Object*> objects) {
   }
 
   return false;
+}
+
+//Check Colision
+void Game::checkColision() {
+  for(int i = 0; i < objects.size(); i++) {
+    if(distancePoints(getFaceX(), getFaceY(), objects[i]->getPosX(), objects[i]->getPosY()) < 100) {
+      objects.erase(objects.begin() + i);
+      placar++;
+      break;
+    }
+  }
+}
+
+//Distance point
+int Game::distancePoints(int x, int y, int x0, int y0) {
+  return sqrt(pow(x - x0, 2)+ pow(y - y0, 2));
+}
+
+//Face position
+int Game::getFaceX() { return faceX; }
+int Game::getFaceY() { return faceY; }
+void Game::setFaceX(int x, int faceWidth) {
+  faceX = x + faceWidth/2;
+}
+void Game::setFaceY(int y, int faceHeight) {
+  faceY = y + faceHeight/2;
 }
 
 Game::~Game()
