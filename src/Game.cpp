@@ -82,7 +82,7 @@ void Game::detectFace( Mat& img, CascadeClassifier& cascade, double scale, bool 
     t = (double)getTickCount();
 
     cascade.detectMultiScale( smallImg, faces,
-        1.3, 2, 0
+        1.05, 2, 0
         //|CASCADE_FIND_BIGGEST_OBJECT
         //|CASCADE_DO_ROUGH_SEARCH
         |CASCADE_SCALE_IMAGE,
@@ -115,9 +115,10 @@ void Game::detectFace( Mat& img, CascadeClassifier& cascade, double scale, bool 
 }
 void Game::drawMenu(Mat img) {
   // Desenha quadrados com transparencia
-  double alpha = 0.3;
-  drawTransRect(img, Scalar(0,255,0), alpha, Rect(  0, 0, 200, 200));
-  drawTransRect(img, Scalar(255,0,0), alpha, Rect(200, 0, 200, 200));
+  double alpha = 1;
+  drawTransRect(img, Scalar(97, 116, 232), alpha, Rect(  0, getScreenHeight() - getScreenHeight()/8, getScreenWidth(), getScreenHeight()/8)); 
+  // Desenha um texto
+  putText	(img, "Q para sair", Point(getScreenWidth()/12, getScreenHeight()-getScreenHeight()/22), FONT_HERSHEY_PLAIN, 2, Scalar(121, 200, 224), 3); // fonte
 }
 void Game::drawFrame(Mat img) {
   // Desenha o frame na tela
