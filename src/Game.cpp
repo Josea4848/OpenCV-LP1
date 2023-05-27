@@ -19,8 +19,9 @@
  * @param regin rect region where the should be positioned
  */
 
-Game::Game() {
-
+Game::Game() : Game(0) {}
+Game::Game(int record) {
+  setRecord(record);
 }
 
 //Run
@@ -35,11 +36,15 @@ void Game::run() {
       cerr << "ERROR: Could not load classifier cascade" << endl;
   }
 
+  cout << "TENTA\n";
+
   //Tentando abrir webcam
-  if(!capture.open(2))
+  if(!capture.open(1))
   {
       cout << "Capture from camera #0 didn't work" << endl;
   }
+
+  cout << "HHAHA\n";
 
   if( capture.isOpened() ) {
       cout << "Video capturing has been started ..." << endl;
@@ -114,7 +119,7 @@ void Game::detectFace( Mat& img, CascadeClassifier& cascade, double scale, bool 
 }
 void Game::drawMenu(Mat img) {
   // Desenha um texto
-  putText	(img, "Placar: " + to_string(placar), Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(244,0,0)); // fonte
+  putText	(img, "Placar: " + to_string(placar), Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(244,0,0), 3); // fonte
   
   // Desenha quadrados com transparencia
   double alpha = 1;
@@ -129,11 +134,11 @@ void Game::drawObjects(Mat img) {
     int objType = typeObject();
     
     if(objType < 6)
-      objects.push_back(new Object(xRand(), 0, 50, 50, "../Images/apple.png", 0));
+      objects.push_back(new Object(0, xRand(), 0, 50, 50, "../Images/apple.png", 0));
     else if(objType < 9) 
-      objects.push_back(new Object(xRand(), 0, 50, 50, "../Images/rottenapple.png", 0));
+      objects.push_back(new Object(1, xRand(), 0, 50, 50, "../Images/rottenapple.png", 0));
     else 
-      objects.push_back(new Object(xRand(), 0, 50, 50, "../Images/poison.png", 0));
+      objects.push_back(new Object(2, xRand(), 0, 50, 50, "../Images/poison.png", 0));
   }
   
   vector<int> objectsToDel;
@@ -222,7 +227,7 @@ int Game::xRand() {
 //isClose
 bool Game::isClose(int x, int y, int x0, int y0) {
   int distancia = sqrt(pow(x - x0, 2) + pow(y - y0, 2));
-  if (distancia < 150){
+  if (distancia < 200){
     return true;
   } 
   return false;
@@ -241,8 +246,25 @@ bool Game::isCloseOfObjects(int x, int y, vector<Object*> objects) {
 void Game::checkColision() {
   for(int i = 0; i < objects.size(); i++) {
     if(distancePoints(getFaceX(), getFaceY(), objects[i]->getPosX(), objects[i]->getPosY()) < 100) {
+      int typeObject = objects[i]->getType();
+      switch (typeObject) {
+      case 0:
+        placar++;
+        // Desenha um texto
+        putText	(frame, "Placar: " + to_string(placar), Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(244,255,0),3); // fonte
+        break;
+      case 1:
+        if(placar > 0)
+          placar--;
+        putText	(frame, "Placar: " + to_string(placar), Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(0,0,255), 3); // fonte
+        break;
+      case 2:
+        //placar = 0;
+        break;
+      default:
+        break;
+      }
       objects.erase(objects.begin() + i);
-      placar++;
       break;
     }
   }
@@ -263,7 +285,8 @@ void Game::setFaceY(int y, int faceHeight) {
   faceY = y + faceHeight/2;
 }
 
-Game::~Game()
-{
+//Record
+int Game::getRecord() {return record;}
+void Game::setRecord(int record) {this->record = record;}
 
-}
+Game::~Game() {}

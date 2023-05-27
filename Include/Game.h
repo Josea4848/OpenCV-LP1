@@ -20,7 +20,9 @@ const string cascadeName = "../dataset/haarcascade_frontalface_default.xml";
 
 class Game {
 public:
+    //Constructors
     Game();
+    Game(int record);
     
     //Run game
     void run();
@@ -59,9 +61,13 @@ public:
     //Distance points
     int distancePoints(int x, int y, int x0, int y0);
 
+    //Record
+    int getRecord();
+    void setRecord(int record);
+
     vector<Object*> objects;
 private:
-    int record, placar;
+    int record, placar = 0;
     VideoCapture capture;
     Mat frame;
     bool tryflip;
