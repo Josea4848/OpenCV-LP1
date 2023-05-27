@@ -7,6 +7,8 @@
 
 using namespace std;
 
+#define ACELERACAO 2
+
 class Object
 {
 public:
@@ -18,6 +20,7 @@ public:
     int getPosY();
     int getHeight();
     int getWidth();
+    int getVelY();
     string getShape();
 
     //Sets
@@ -25,9 +28,13 @@ public:
     void setPosY(int y);
     void setHeight(int height);
     void setWidth(int width);
+    void setVelY(int vy);
     void setShape(string shape);
+
+    //Acelerar
+    void speedUp();
 private:
-    int posX, posY, height, width;
+    int posX, posY, height, width, velY;
     string shape;
 };
 

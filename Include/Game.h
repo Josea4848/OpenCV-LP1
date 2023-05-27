@@ -4,11 +4,14 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 #include "opencv2/objdetect.hpp"
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/videoio.hpp"
 #include "Object.h"
+#include <random>
+#include <cmath>
 
 using namespace std;
 using namespace cv;
@@ -27,21 +30,30 @@ public:
     void drawMenu(Mat frame);
     int getScreenHeight();
     int getScreenWidth();
-    void InsertObject(Mat frame);
+    void drawObjects(Mat frame);
+
+    //random methods
+    bool newObject();
+    int typeObject();
+    int xRand();
 
     //Draw
     void drawTransRect(Mat frame, Scalar color, double alpha, Rect region);
     void drawTransparency(Mat frame, Mat transp, int xPos, int yPos);
     void drawFrame(Mat frame);
     ~Game();
-
+    
+    //IsClose
+    bool isClose(int x, int y, int x0, int y0);
+    bool isCloseOfObjects(int x, int y, vector<Object*> objects);
 private:
     int record;
     VideoCapture capture;
     Mat frame;
     bool tryflip;
     CascadeClassifier cascade;
-    double scale;
+    double scale; 
+    vector<Object*> objects;
 };
 
 #endif
