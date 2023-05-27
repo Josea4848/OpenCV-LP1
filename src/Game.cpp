@@ -51,6 +51,7 @@ void Game::run() {
               break;
           detectFace( frame, cascade, scale, tryflip );
           drawMenu(frame);
+          InsertObject(frame);
           drawFrame(frame);
 
           char c = (char)waitKey(10);
@@ -100,25 +101,39 @@ void Game::detectFace( Mat& img, CascadeClassifier& cascade, double scale, bool 
         r = faces[i];
       }
     }
-
     rectangle( img, Point(cvRound(r.x), cvRound(r.y)),
                     Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
                     color, 3); 
-
-    // Desenha uma imagem
-    Mat overlay = cv::imread("../Images/apple.png", IMREAD_UNCHANGED);
-    //drawTransparency(img, overlay, 10, 250);
-
-    // Desenha um texto
-    color = Scalar(0,0,255);
-    putText	(img, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
 }
 void Game::drawMenu(Mat img) {
+  // Desenha um texto
+  putText	(img, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(244,0,0)); // fonte
+  
   // Desenha quadrados com transparencia
   double alpha = 1;
   drawTransRect(img, Scalar(97, 116, 232), alpha, Rect(  0, getScreenHeight() - getScreenHeight()/8, getScreenWidth(), getScreenHeight()/8)); 
   // Desenha um texto
   putText	(img, "Q para sair", Point(getScreenWidth()/12, getScreenHeight()-getScreenHeight()/22), FONT_HERSHEY_PLAIN, 2, Scalar(121, 200, 224), 3); // fonte
+}
+void Game::InsertObject(Mat img) {
+  // Desenha uma imagem
+  static int x = 200;
+  static int y = 0;
+  static int vy = 0;
+  static int ay = 5;
+
+  y += vy;
+  vy += ay;
+
+  Mat overlay = cv::imread("../Images/poison.png", IMREAD_UNCHANGED);
+  Size size(50, 50);
+  resize(overlay, overlay, size);
+  if(y + overlay.rows < getScreenHeight() - 20)
+    drawTransparency(img, overlay, 10, y);
+  else {
+    y = 0;
+    vy = 0;
+  }
 }
 void Game::drawFrame(Mat img) {
   // Desenha o frame na tela

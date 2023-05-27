@@ -27,6 +27,7 @@ public:
     void drawMenu(Mat frame);
     int getScreenHeight();
     int getScreenWidth();
+    void InsertObject(Mat frame);
 
     //Draw
     void drawTransRect(Mat frame, Scalar color, double alpha, Rect region);
