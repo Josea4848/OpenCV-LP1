@@ -46,14 +46,15 @@ public:
     //IsClose
     bool isClose(int x, int y, int x0, int y0);
     bool isCloseOfObjects(int x, int y, vector<Object*> objects);
+
+    vector<Object*> objects;
 private:
     int record;
     VideoCapture capture;
     Mat frame;
     bool tryflip;
     CascadeClassifier cascade;
-    double scale; 
-    vector<Object*> objects;
+    double scale;
 };
 
 #endif

@@ -122,22 +122,35 @@ void Game::drawObjects(Mat img) {
     int objType = typeObject();
     
     if(objType < 6)
-      objects.push_back(new Object(xRand(), 0, 50, 50, "../Images/apple.png"));
+      objects.push_back(new Object(xRand(), 0, 50, 50, "../Images/apple.png", 0));
     else if(objType < 9) 
-      objects.push_back(new Object(xRand(), 0, 50, 50, "../Images/apple.png"));
+      objects.push_back(new Object(xRand(), 0, 50, 50, "../Images/rottenapple.png", 0));
     else 
-      objects.push_back(new Object(xRand(), 0, 100, 50, "../Images/poison.png"));
+      objects.push_back(new Object(xRand(), 0, 50, 50, "../Images/poison.png", 0));
   }
-  static int vy = 0;
-  for(Object* obj: objects) {
-    obj->setPosY(obj->getPosY() + obj->getVelY());
-    Mat overlay = imread(obj->getShape(), IMREAD_UNCHANGED);
-    resize(overlay, overlay, Size(obj->getHeight(), obj->getWidth()));
-    if(overlay.cols + obj->getPosY() < getScreenHeight()- getScreenHeight()/8) {
-      drawTransparency(img, overlay, obj->getPosX(), obj->getPosY());
-      obj->speedUp();
+  
+  vector<int> objectsToDel;
+
+  //Percorre todos os objetos do vector
+  for(int i = 0; i < objects.size(); i++) {
+    objects[i]->setPosY(objects[i]->getPosY() + objects[i]->getVelY());
+    Mat overlay = imread(objects[i]->getShape(), IMREAD_UNCHANGED);
+    resize(overlay, overlay, Size(objects[i]->getHeight(), objects[i]->getWidth()));
+    //Se o objeto ainda não passar do limite, será exibido
+    if(overlay.cols + objects[i]->getPosY() + objects[i]->getVelY() < getScreenHeight()- getScreenHeight()/8) {
+      drawTransparency(img, overlay, objects[i]->getPosX(), objects[i]->getPosY());
+      objects[i]->speedUp();
+    }
+    //Caso tenha passado do limite, irá ter seu índice salvo, para deletar
+    else {
+      objectsToDel.push_back(i);
     }  
   }
+
+  for(int index: objectsToDel) {
+    objects.erase(objects.begin() + index);
+  } 
+
 }
 void Game::drawFrame(Mat img) {
   // Desenha o frame na tela
@@ -187,8 +200,8 @@ int Game::typeObject() {
   return (rand() % 10);
 }
 int Game::xRand() {
-  int minNumber = getScreenWidth()/14; // Valor mínimo do intervalo
-  int maxNumber = getScreenWidth() - getScreenWidth()/14; // Valor máximo do intervalo
+  int minNumber = getScreenWidth()/4; // Valor mínimo do intervalo
+  int maxNumber = getScreenWidth() - getScreenWidth()/4; // Valor máximo do intervalo
 
   std::random_device rd; // Seed para a geração de números aleatórios
   std::mt19937 gen(rd()); // Gerador de números aleatórios
@@ -202,7 +215,7 @@ int Game::xRand() {
 //isClose
 bool Game::isClose(int x, int y, int x0, int y0) {
   int distancia = sqrt(pow(x - x0, 2) + pow(y - y0, 2));
-  if (distancia < 400){
+  if (distancia < 150){
     return true;
   } 
   return false;

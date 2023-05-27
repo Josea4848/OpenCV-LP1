@@ -7,13 +7,13 @@
 
 using namespace std;
 
-#define ACELERACAO 2
+#define ACELERACAO 1
 
 class Object
 {
 public:
     //Constructor
-    Object(int posX, int posY, int height, int width, string shape);
+    Object(int posX, int posY, int height, int width, string shape, int velY);
     
     //Gets
     int getPosX();

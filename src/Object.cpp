@@ -1,11 +1,12 @@
 #include "../Include/Object.h"
 
-Object::Object(int posX, int posY, int height, int width, string shape) {
+Object::Object(int posX, int posY, int height, int width, string shape, int velY) {
   setPosX(posX);
   setPosY(posY);
   setHeight(height);
   setWidth(width);
   setShape(shape);
+  setVelY(velY);
 }
 
 //Gets
