@@ -136,7 +136,7 @@ void Game::checkColision() {
       case 0:
         placar++;
         // Desenha um texto
-        putText	(frame, "Placar: " + to_string(placar), Point(getScreenWidth()/12, 50), FONT_HERSHEY_PLAIN, 2, Scalar(244,255,0),3); // fonte
+        putText	(frame, "Placar: " + to_string(placar), Point(getScreenWidth()/12, 50), FONT_HERSHEY_PLAIN, 2, Scalar(0,255,0),3); // fonte
         path = "../Sound/siu.wav";
         break;
       case 1:

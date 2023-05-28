@@ -44,7 +44,7 @@ int main( int argc, const char** argv ) {
             //clear terminal
             clearTerminal();
             g1->exibePontuacao();
-            sleep(2);
+            sleep(3);
             break;
         case 2:
             short int dificulty;

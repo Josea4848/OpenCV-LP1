@@ -14,7 +14,7 @@ void playSound(const std::string& soundPath) {
     sound.play();
 
     // Aguarda um tempo suficiente para o som tocar
-    sf::sleep(sf::seconds(5)); // Por exemplo, aguarda 5 segundos
+    sf::sleep(sf::seconds(2.5)); // Por exemplo, aguarda 5 segundos
 
     sound.stop();
 }
