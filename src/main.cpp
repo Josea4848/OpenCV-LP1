@@ -37,24 +37,27 @@ int main( int argc, const char** argv ) {
         cin >> option;
 
         //Clear terminal
-
-        switch (option)
-        {
+        clearTerminal();
+        switch (option) {
         case 1:
             g1->run();
             //clear terminal
             clearTerminal();
-            cout << "=======================================\n";
-            cout << "\tSua pontuação: " << g1->getPlacar() << endl;
-            cout << "=======================================\n";
-            sleep(5);
+            g1->exibePontuacao();
+            sleep(2);
             break;
         case 2:
             short int dificulty;
             menuDificuldade();
             cout << "Sua opção: ";
             cin >> dificulty;
-            g1->changeDificulty(dificulty);
+            try {
+                g1->changeDificulty(dificulty);
+            }
+            catch(InvalidDificultyValue *e) {
+                cout << e->what() << '\n';
+                sleep(2);
+            }              
             break;
         case 3:
             run = false;
@@ -63,6 +66,8 @@ int main( int argc, const char** argv ) {
             cout << "Opção Inválida\n";
             break;
         }
+    
+        clearTerminal();
     }
     
     delete g1;

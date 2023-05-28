@@ -43,19 +43,15 @@ void Game::run() {
   if (!cascade.load(cascadeName)) {
     cerr << "ERROR: Could not load classifier cascade" << endl;
   }
-
-  cout << "TENTA\n";
-
   //Tentando abrir webcam
-  if(!capture.open(1)) {
+  if(!capture.open(0)) {
     cout << "Capture from camera #0 didn't work" << endl;
   }
-
-  cout << "HHAHA\n";
 
   if( capture.isOpened() ) {
     cout << "Video capturing has been started ..." << endl;
     namedWindow("Fruit Tinta", WINDOW_NORMAL);
+    resizeWindow("Fruit Tinta", 800, 600); // Define o tamanho da janela
     while (true) {
       capture >> frame;
       if( frame.empty() )
@@ -208,10 +204,17 @@ void Game::changeDificulty(int dificulty) {
     setAcel(30);
     break;
   default:
-    cout << InvalidDificultyValue().what() << endl;
-    sleep(2);
+    throw new InvalidDificultyValue();
     break;
   }
+}
+
+//Exibe pontuacao
+void Game::exibePontuacao() {
+  cout << "=======================================\n";
+  cout << "\tSua pontuação: " << getPlacar() << endl;
+  cout << "=======================================\n";
+  cout << "Pressione Enter para sair..." << '\n';
 }
 
 //Destructor

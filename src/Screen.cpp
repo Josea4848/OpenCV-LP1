@@ -51,20 +51,25 @@ void Game::detectFace( Mat& img, CascadeClassifier& cascade, double scale, bool 
 }
 void Game::drawMenu(Mat img) {
   // Desenha um texto
-  putText	(img, "Placar: " + to_string(placar), Point(getScreenWidth()/12, 50), FONT_HERSHEY_PLAIN, 2, Scalar(244,0,0), 3); // fonte
+  putText	(img, "Placar: " + to_string(placar), Point(getScreenWidth()/12 + 2, 52), FONT_HERSHEY_PLAIN, 2, Scalar(121,121,121), 3); // fonte
+  putText	(img, "Placar: " + to_string(placar), Point(getScreenWidth()/12, 50), FONT_HERSHEY_PLAIN, 2, Scalar(255,255,255), 3); // fonte
   
-  // Desenha quadrados com transparencia
+  // Desenha quadrados 
   double alpha = 1;
-  drawTransRect(img, Scalar(97, 116, 232), alpha, Rect(  0, getScreenHeight() - getScreenHeight()/8, getScreenWidth(), getScreenHeight()/8)); 
+  drawTransRect(img, Scalar(74, 32, 0), alpha, Rect(  0, getScreenHeight() - getScreenHeight()/8, getScreenWidth(), getScreenHeight()/8)); 
   // Desenha um texto
-  putText	(img, "Q para sair", Point(getScreenWidth()/12, getScreenHeight()-getScreenHeight()/22), FONT_HERSHEY_PLAIN, 2, Scalar(121, 200, 224), 3); // fonte
+  
+  putText	(img, "Q para sair", Point(getScreenWidth()/12 + 2, getScreenHeight()-getScreenHeight()/22 + 2), FONT_HERSHEY_PLAIN, 2, Scalar(0, 95, 179), 3); // fonte
+  putText	(img, "Q para sair", Point(getScreenWidth()/12, getScreenHeight()-getScreenHeight()/22), FONT_HERSHEY_PLAIN, 2, Scalar(2, 158, 253), 3); // fonte
+  
 
   // Desenha troféu
   Mat trophy = imread("../Images/trophy.png", IMREAD_UNCHANGED);
   double proporcao = min((double)(getScreenWidth()/30)/trophy.cols, (double)(getScreenHeight()/20)/trophy.rows);
   resize(trophy, trophy, Size(getScreenWidth()*proporcao, getScreenHeight()*proporcao));
   drawTransparency(img, trophy, getScreenWidth() - getScreenWidth()/4, getScreenHeight()/22);
-  putText	(img, to_string(getRecord()), Point(getScreenWidth()-getScreenWidth()/4 + 50, getScreenHeight()/12), FONT_HERSHEY_PLAIN, 2, Scalar(121, 200, 224), 3); // fonte
+  putText	(img, to_string(getRecord()), Point(getScreenWidth()-getScreenWidth()/4 + 52, getScreenHeight()/12 + 2), FONT_HERSHEY_PLAIN, 2, Scalar(64, 64, 64), 3); // fonte
+  putText	(img, to_string(getRecord()), Point(getScreenWidth()-getScreenWidth()/4 + 50, getScreenHeight()/12), FONT_HERSHEY_PLAIN, 2, Scalar(255, 255, 255), 3); // fonte
 }
 void Game::drawObjects(Mat img) {
   int xPos = xRand();

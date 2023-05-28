@@ -15,6 +15,8 @@
 #include "../Exceptions/InvalidDificultyValue.cpp"
 #include <unistd.h>
 
+const string fontPath = "../Font/04B_30__.TFF";
+
 using namespace std;
 using namespace cv;
 
@@ -81,6 +83,9 @@ public:
     //Aceleracao
     int getAcel();
     void setAcel(int acel);
+
+    //Exibe pontuação
+    void exibePontuacao();
 
 private:
     vector<Object*> objects;
