@@ -12,6 +12,8 @@
 #include "Object.h"
 #include <random>
 #include <cmath>
+#include "../Exceptions/InvalidDificultyValue.cpp"
+#include <unistd.h>
 
 using namespace std;
 using namespace cv;
@@ -33,16 +35,16 @@ public:
     int getScreenHeight();
     int getScreenWidth();
     void drawObjects(Mat frame);
+    void drawTransRect(Mat frame, Scalar color, double alpha, Rect region);
+    void drawTransparency(Mat frame, Mat transp, int xPos, int yPos);
+    void drawFrame(Mat frame);
 
     //random methods
     bool newObject();
     int typeObject();
     int xRand();
 
-    //Draw
-    void drawTransRect(Mat frame, Scalar color, double alpha, Rect region);
-    void drawTransparency(Mat frame, Mat transp, int xPos, int yPos);
-    void drawFrame(Mat frame);
+    //Destructor
     ~Game();
 
     //Face position
@@ -69,15 +71,27 @@ public:
     bool isGameOver();
     void setGameOver(bool state);
 
-    vector<Object*> objects;
+    //Placar
+    int getPlacar();
+    void setPlacar(int placar);
+
+    //changeDificulty
+    void changeDificulty(int dificulty);
+
+    //Aceleracao
+    int getAcel();
+    void setAcel(int acel);
+
 private:
-    int record, placar = 0;
+    vector<Object*> objects;
+    int record, placar = 0, dificulty = 0;
     VideoCapture capture;
     Mat frame;
     bool tryflip, gameOver;
     CascadeClassifier cascade;
     double scale;
     int faceX, faceY;
+    int acel;
 };
 
 #endif

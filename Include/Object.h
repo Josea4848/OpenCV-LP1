@@ -6,14 +6,11 @@
 #include <string>
 
 using namespace std;
-
-#define ACELERACAO 3
-
 class Object
 {
 public:
     //Constructor
-    Object(int type, int posX, int posY, int height, int width, string shape, int velY);
+    Object(int type, int posX, int posY, int height, int width, string shape, int velY, int acelY);
     
     //Gets
     int getType();
@@ -22,6 +19,7 @@ public:
     int getHeight();
     int getWidth();
     int getVelY();
+    int getAcelY();
     string getShape();
 
     //Sets
@@ -32,11 +30,12 @@ public:
     void setWidth(int width);
     void setVelY(int vy);
     void setShape(string shape);
+    void setAcelY(int acelY);
 
     //Acelerar
     void speedUp();
 private:
-    int posX, posY, height, width, velY;
+    int posX, posY, height, width, velY, acelY;
     string shape;
     int type;
 };
