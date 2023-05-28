@@ -57,7 +57,8 @@ int main( int argc, const char** argv ) {
             catch(InvalidDificultyValue *e) {
                 cout << e->what() << '\n';
                 sleep(2);
-            }              
+                delete e;
+            }
             break;
         case 3:
             run = false;
@@ -69,7 +70,17 @@ int main( int argc, const char** argv ) {
     
         clearTerminal();
     }
+
+    //Saving record
+    database->open(baseDir, fstream::out);
+    if(database->is_open()) {
+        *database << g1->getRecord() << endl;
+        database->close();
+    }
     
+
+    //Destructors
+    delete database;
     delete g1;
 
     return 0;

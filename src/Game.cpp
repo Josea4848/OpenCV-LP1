@@ -131,24 +131,30 @@ void Game::checkColision() {
   for(int i = 0; i < objects.size(); i++) {
     if(distancePoints(getFaceX(), getFaceY(), objects[i]->getPosX(), objects[i]->getPosY()) < 100) {
       int typeObject = objects[i]->getType();
+      string path;
       switch (typeObject) {
       case 0:
         placar++;
         // Desenha um texto
         putText	(frame, "Placar: " + to_string(placar), Point(getScreenWidth()/12, 50), FONT_HERSHEY_PLAIN, 2, Scalar(244,255,0),3); // fonte
+        path = "../Sound/siu.wav";
         break;
       case 1:
         if(placar > 0) {
           placar--;
           putText	(frame, "Placar: " + to_string(placar), Point(getScreenWidth()/12, 50), FONT_HERSHEY_PLAIN, 2, Scalar(0,0,255), 3); // fonte
+          path = "../Sound/oof.wav";
         }
         break;
       case 2:
         setGameOver(true);
+        path = "../Sound/vaiprovasco.wav";
         break;
       default:
         break;
       }
+      playSoundInBackground(path);
+      
       objects.erase(objects.begin() + i);
       break;
     }
@@ -214,7 +220,6 @@ void Game::exibePontuacao() {
   cout << "=======================================\n";
   cout << "\tSua pontuação: " << getPlacar() << endl;
   cout << "=======================================\n";
-  cout << "Pressione Enter para sair..." << '\n';
 }
 
 //Destructor

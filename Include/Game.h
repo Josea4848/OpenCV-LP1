@@ -14,8 +14,7 @@
 #include <cmath>
 #include "../Exceptions/InvalidDificultyValue.cpp"
 #include <unistd.h>
-
-const string fontPath = "../Font/04B_30__.TFF";
+#include "sound.h"
 
 using namespace std;
 using namespace cv;

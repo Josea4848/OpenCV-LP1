@@ -65,9 +65,10 @@ void Game::drawMenu(Mat img) {
 
   // Desenha troféu
   Mat trophy = imread("../Images/trophy.png", IMREAD_UNCHANGED);
-  double proporcao = min((double)(getScreenWidth()/30)/trophy.cols, (double)(getScreenHeight()/20)/trophy.rows);
+  double proporcao = min((double)(getScreenWidth()/8)/trophy.cols, (double)(getScreenHeight()/2)/trophy.rows);
   resize(trophy, trophy, Size(getScreenWidth()*proporcao, getScreenHeight()*proporcao));
-  drawTransparency(img, trophy, getScreenWidth() - getScreenWidth()/4, getScreenHeight()/22);
+  drawTransparency(img, trophy, getScreenWidth() - getScreenWidth()/4, getScreenHeight()/28);
+  //Record text
   putText	(img, to_string(getRecord()), Point(getScreenWidth()-getScreenWidth()/4 + 52, getScreenHeight()/12 + 2), FONT_HERSHEY_PLAIN, 2, Scalar(64, 64, 64), 3); // fonte
   putText	(img, to_string(getRecord()), Point(getScreenWidth()-getScreenWidth()/4 + 50, getScreenHeight()/12), FONT_HERSHEY_PLAIN, 2, Scalar(255, 255, 255), 3); // fonte
 }
