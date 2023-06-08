@@ -1,5 +1,58 @@
 #include "../Include/Game.h"
 
+//Detect webcam 
+//Tentando abrir o cascade
+void Game::webCamScreen() {
+  if (!cascade.load(cascadeName)) {
+    cerr << "ERROR: Could not load classifier cascade" << endl;
+  }
+  //Tentando abrir webcam
+  if(!capture.open(0)) {
+    cout << "Capture from camera #0 didn't work" << endl;
+  }
+
+  if( capture.isOpened() ) {
+    cout << "Video capturing has been started ..." << endl;
+    namedWindow("Fruit Tinta", WINDOW_NORMAL);
+    resizeWindow("Fruit Tinta", 800, 600); // Define o tamanho da janela
+    while (true) {
+      capture >> frame;
+      if( frame.empty() )
+          break;
+      detectFace( frame, cascade, scale, tryflip );
+      
+      if(isMainMenu()) {
+        setGameOver(false);
+        drawMainMenu(frame);
+        checkMenu();
+      }
+      //Menu principal desativado
+      else {
+        drawMenu(frame);
+        drawObjects(frame);
+        checkColision();
+        if(isGameOver()) {
+          if(getPlacar() > getRecord())
+            setRecord(getPlacar());
+          setPlacar(0);
+          setMainMenu(true);
+        }         
+      }
+
+      //Desenha frame na janela
+      drawFrame(frame);
+        
+      char c = (char)waitKey(10);
+      //Encerra aplicação
+      if( c == 27 || c == 'q' || c == 'Q') {
+        destroyAllWindows();
+        break;
+      }
+          
+    }
+  }
+}
+
 //Detect face and draw frame 
 void Game::detectFace( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
 {
@@ -49,6 +102,24 @@ void Game::detectFace( Mat& img, CascadeClassifier& cascade, double scale, bool 
                   Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
                   color, 3);  
 }
+//Draw MainMenu
+void Game::drawMainMenu(Mat img) {
+  //DrawLogo
+  Mat logo = imread("../Images/fruittinta.png", IMREAD_UNCHANGED);
+  double proporcao = min((double)(getScreenWidth()/1.5)/logo.cols, (double)(getScreenHeight()/2)/logo.rows);
+  resize(logo, logo, Size(getScreenWidth()*proporcao, getScreenHeight()*proporcao));
+  drawTransparency(img, logo, (getScreenWidth()-logo.cols)/2, getScreenHeight()/30);
+  // Desenha quadrados 
+  Mat playButton = imread("../Images/playbutton.png", IMREAD_UNCHANGED);
+  proporcao = min((double)(getScreenWidth()/1.5)/playButton.cols, (double)(getScreenHeight()/4)/playButton.rows);
+  resize(playButton, playButton, Size(getScreenWidth()*proporcao, getScreenHeight()*proporcao));
+  drawTransparency(img, playButton, (getScreenWidth() - playButton.cols)/2, (getScreenHeight()- playButton.rows)/2);
+  // Desenha um texto
+  putText	(img, "Q para sair", Point(getScreenWidth()/12 + 2, getScreenHeight()-getScreenHeight()/22 + 2), FONT_HERSHEY_PLAIN, 2, Scalar(64, 64, 64), 3); // fonte
+  putText	(img, "Q para sair", Point(getScreenWidth()/12, getScreenHeight()-getScreenHeight()/22), FONT_HERSHEY_PLAIN, 2, Scalar(255, 255, 255), 3); // fonte
+}
+
+//Draw Menu
 void Game::drawMenu(Mat img) {
   // Desenha um texto
   putText	(img, "Placar: " + to_string(placar), Point(getScreenWidth()/12 + 2, 52), FONT_HERSHEY_PLAIN, 2, Scalar(121,121,121), 3); // fonte
@@ -58,7 +129,6 @@ void Game::drawMenu(Mat img) {
   double alpha = 1;
   drawTransRect(img, Scalar(74, 32, 0), alpha, Rect(  0, getScreenHeight() - getScreenHeight()/8, getScreenWidth(), getScreenHeight()/8)); 
   // Desenha um texto
-  
   putText	(img, "Q para sair", Point(getScreenWidth()/12 + 2, getScreenHeight()-getScreenHeight()/22 + 2), FONT_HERSHEY_PLAIN, 2, Scalar(0, 95, 179), 3); // fonte
   putText	(img, "Q para sair", Point(getScreenWidth()/12, getScreenHeight()-getScreenHeight()/22), FONT_HERSHEY_PLAIN, 2, Scalar(2, 158, 253), 3); // fonte
   
@@ -74,6 +144,16 @@ void Game::drawMenu(Mat img) {
 }
 void Game::drawObjects(Mat img) {
   int xPos = xRand();
+  int placarAtual = getPlacar();
+
+  if(placarAtual < 10)
+    changeDificulty(1);
+  else if (placarAtual < 30)
+    changeDificulty(2);
+  else if (placarAtual < 50)
+    changeDificulty(3);
+  else 
+    changeDificulty(4);
 
   if(newObject() && objects.size() < 5 && !isCloseOfObjects(xPos, 0, objects)) {
     int objType = typeObject();
@@ -94,7 +174,7 @@ void Game::drawObjects(Mat img) {
     Mat overlay = imread(objects[i]->getShape(), IMREAD_UNCHANGED);
     resize(overlay, overlay, Size(objects[i]->getHeight(), objects[i]->getWidth()));
     //Se o objeto ainda não passar do limite, será exibido
-    if(overlay.cols + objects[i]->getPosY() /* + objects[i]->getVelY() */ < getScreenHeight()- getScreenHeight()/8) {
+    if(overlay.cols + objects[i]->getPosY() < getScreenHeight()- getScreenHeight()/8) {
       drawTransparency(img, overlay, objects[i]->getPosX(), objects[i]->getPosY());
       objects[i]->speedUp();
     }

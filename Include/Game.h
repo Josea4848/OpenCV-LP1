@@ -12,7 +12,7 @@
 #include "Object.h"
 #include <random>
 #include <cmath>
-#include "../Exceptions/InvalidDificultyValue.cpp"
+#include "../Exceptions/InvalidDificultyValue.h"
 #include <unistd.h>
 #include "sound.h"
 
@@ -31,8 +31,10 @@ public:
     void run();
 
     //Screen
+    void webCamScreen();
     void detectFace(Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
     void drawMenu(Mat frame);
+    void drawMainMenu(Mat frame);
     int getScreenHeight();
     int getScreenWidth();
     void drawObjects(Mat frame);
@@ -58,8 +60,9 @@ public:
     bool isClose(int x, int y, int x0, int y0);
     bool isCloseOfObjects(int x, int y, vector<Object*> objects);
 
-    //check colision
+    //check 
     void checkColision();
+    void checkMenu();
 
     //Distance points
     int distancePoints(int x, int y, int x0, int y0);
@@ -71,6 +74,10 @@ public:
     //GameOver
     bool isGameOver();
     void setGameOver(bool state);
+
+    //MainMenu
+    bool isMainMenu();
+    void setMainMenu(bool valeu);
 
     //Placar
     int getPlacar();
@@ -96,6 +103,7 @@ private:
     double scale;
     int faceX, faceY;
     int acel;
+    bool mainMenu;
 };
 
 #endif

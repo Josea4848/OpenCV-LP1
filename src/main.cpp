@@ -30,46 +30,7 @@ int main( int argc, const char** argv ) {
 
     g1 = new Game(record);
 
-    while (run) {
-        exibeMenu();
-        //Lê opção
-        cout << "\nSua opção: ";
-        cin >> option;
-
-        //Clear terminal
-        clearTerminal();
-        switch (option) {
-        case 1:
-            g1->run();
-            //clear terminal
-            clearTerminal();
-            g1->exibePontuacao();
-            sleep(3);
-            break;
-        case 2:
-            short int dificulty;
-            menuDificuldade();
-            cout << "Sua opção: ";
-            cin >> dificulty;
-            try {
-                g1->changeDificulty(dificulty);
-            }
-            catch(InvalidDificultyValue *e) {
-                cout << e->what() << '\n';
-                sleep(2);
-                delete e;
-            }
-            break;
-        case 3:
-            run = false;
-            break;
-        default:
-            cout << "Opção Inválida\n";
-            break;
-        }
-    
-        clearTerminal();
-    }
+    g1->run();
 
     //Saving record
     database->open(baseDir, fstream::out);

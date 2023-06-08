@@ -1,24 +1,5 @@
 #include "../Include/Game.h"
 
-/**
- * @brief Draws a transparent image over a frame Mat.
- * 
- * @param frame the frame where the transparent image will be drawn
- * @param transp the Mat image with transparency, read from a PNG image, with the IMREAD_UNCHANGED flag
- * @param xPos x position of the frame image where the image will start.
- * @param yPos y position of the frame image where the image will start.
- */
-
-
-/**
- * @brief Draws a transparent rect over a frame Mat.
- * 
- * @param frame the frame where the transparent image will be drawn
- * @param color the color of the rect
- * @param alpha transparence level. 0 is 100% transparent, 1 is opaque.
- * @param regin rect region where the should be positioned
- */
-
 Game::Game() : Game(0) {}
 Game::Game(int record) {
   setRecord(record);
@@ -36,41 +17,15 @@ void Game::run() {
   //Placar inicial
   setPlacar(0);
 
+  //Seta estado inicial do jogo
+  setMainMenu(true);
+
   //Variável de controle em caso de perder o jogo
   setGameOver(false);
 
-  //Tentando abrir o cascade
-  if (!cascade.load(cascadeName)) {
-    cerr << "ERROR: Could not load classifier cascade" << endl;
-  }
-  //Tentando abrir webcam
-  if(!capture.open(0)) {
-    cout << "Capture from camera #0 didn't work" << endl;
-  }
+  //Detecta webcam e inseri a tela
+  webCamScreen();
 
-  if( capture.isOpened() ) {
-    cout << "Video capturing has been started ..." << endl;
-    namedWindow("Fruit Tinta", WINDOW_NORMAL);
-    resizeWindow("Fruit Tinta", 800, 600); // Define o tamanho da janela
-    while (true) {
-      capture >> frame;
-      if( frame.empty() )
-          break;
-      detectFace( frame, cascade, scale, tryflip );
-      drawObjects(frame);
-      drawMenu(frame);
-      checkColision();
-      drawFrame(frame);
-
-      char c = (char)waitKey(10);
-      //Encerra aplicação
-      if( c == 27 || c == 'q' || c == 'Q' || isGameOver()) {
-        destroyAllWindows();
-        break;
-      }
-          
-    }
-  }
   //Caso o placar seja o novo record
   if (getPlacar() > getRecord()) {
     setRecord(getPlacar());
@@ -190,6 +145,10 @@ void Game::setGameOver(bool state) {
   gameOver = state;
 }
 
+//MainMenu
+bool Game::isMainMenu(){return mainMenu;}
+void Game::setMainMenu(bool value) {mainMenu = value;}
+
 //acel
 int Game::getAcel() {return acel;}
 void Game::setAcel(int acel) {this->acel = acel;}
@@ -220,6 +179,12 @@ void Game::exibePontuacao() {
   cout << "=======================================\n";
   cout << "\tSua pontuação: " << getPlacar() << endl;
   cout << "=======================================\n";
+}
+
+//Check menu
+void Game::checkMenu() {
+  if(distancePoints(getFaceX(), getFaceY(),getScreenWidth()/2, getScreenHeight()/2) < 25)
+    setMainMenu(false);
 }
 
 //Destructor
