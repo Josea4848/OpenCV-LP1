@@ -104,14 +104,9 @@ void Game::detectFace( Mat& img, CascadeClassifier& cascade, double scale, bool 
 }
 //Draw MainMenu
 void Game::drawMainMenu(Mat img) {
-  //DrawLogo
-  Mat logo = imread("../Images/fruittinta.png", IMREAD_UNCHANGED);
-  double proporcao = min((double)(getScreenWidth()/1.5)/logo.cols, (double)(getScreenHeight()/2)/logo.rows);
-  resize(logo, logo, Size(getScreenWidth()*proporcao, getScreenHeight()*proporcao));
-  drawTransparency(img, logo, (getScreenWidth()-logo.cols)/2, getScreenHeight()/30);
   // Desenha quadrados 
   Mat playButton = imread("../Images/playbutton.png", IMREAD_UNCHANGED);
-  proporcao = min((double)(getScreenWidth()/1.5)/playButton.cols, (double)(getScreenHeight()/4)/playButton.rows);
+  double proporcao = min((double)(getScreenWidth()/1.5)/playButton.cols, (double)(getScreenHeight()/4)/playButton.rows);
   resize(playButton, playButton, Size(getScreenWidth()*proporcao, getScreenHeight()*proporcao));
   drawTransparency(img, playButton, (getScreenWidth() - playButton.cols)/2, (getScreenHeight()- playButton.rows)/2);
   // Desenha um texto
