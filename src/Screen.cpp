@@ -14,7 +14,7 @@ void Game::webCamScreen() {
   if( capture.isOpened() ) {
     cout << "Video capturing has been started ..." << endl;
     namedWindow("Fruit Tinta", WINDOW_NORMAL);
-    resizeWindow("Fruit Tinta", 800, 600); // Define o tamanho da janela
+    resizeWindow("Fruit Tinta", 1280, 720); // Define o tamanho da janela
     while (true) {
       capture >> frame;
       if( frame.empty() )
@@ -35,6 +35,7 @@ void Game::webCamScreen() {
           if(getPlacar() > getRecord())
             setRecord(getPlacar());
           setPlacar(0);
+          objects.clear();
           setMainMenu(true);
         }         
       }
@@ -122,10 +123,9 @@ void Game::drawMenu(Mat img) {
   
   // Desenha quadrados 
   double alpha = 1;
-  drawTransRect(img, Scalar(74, 32, 0), alpha, Rect(  0, getScreenHeight() - getScreenHeight()/8, getScreenWidth(), getScreenHeight()/8)); 
   // Desenha um texto
-  putText	(img, "Q para sair", Point(getScreenWidth()/12 + 2, getScreenHeight()-getScreenHeight()/22 + 2), FONT_HERSHEY_PLAIN, 2, Scalar(0, 95, 179), 3); // fonte
-  putText	(img, "Q para sair", Point(getScreenWidth()/12, getScreenHeight()-getScreenHeight()/22), FONT_HERSHEY_PLAIN, 2, Scalar(2, 158, 253), 3); // fonte
+  putText	(img, "Q para sair", Point(getScreenWidth()/12 + 2, getScreenHeight()-getScreenHeight()/22 + 2), FONT_HERSHEY_PLAIN, 2, Scalar(64, 64, 64), 3); // fonte
+  putText	(img, "Q para sair", Point(getScreenWidth()/12, getScreenHeight()-getScreenHeight()/22), FONT_HERSHEY_PLAIN, 2, Scalar(255, 255, 255), 3); // fonte
   
 
   // Desenha troféu
